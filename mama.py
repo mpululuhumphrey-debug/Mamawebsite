@@ -179,7 +179,7 @@ HTML = """
         document.getElementById('imageError').style.display='block';">
 
     <p id="imageError" style="display:none;color:#c2185b;">
-        Picha haijapatikana. Tafadhali hakiki faili mama.jpg.
+        Picha haijapatikana. Tafadhali hakiki faili mama.jpg
     </p>
 
     <div class="decoration">💐🌹💐</div>
@@ -201,7 +201,7 @@ HTML = """
     </button>
 
     <p id="musicError" style="display:none;color:#c2185b;">
-        Muziki haujapatikana. Hakiki faili mama.mp3.
+        Muziki haujapatikana. Hakiki faili mama.mp3
     </p>
 
     <div id="message">
