@@ -1,4 +1,4 @@
-from flask import Flask, render_template_string
+from flask import Flask, render_template_string, url_for
 
 app = Flask(__name__)
 
@@ -11,9 +11,7 @@ HTML = """
     <title>Kwa Mama Yangu ❤️</title>
 
     <style>
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
 
         body {
             margin: 0;
@@ -32,11 +30,11 @@ HTML = """
             z-index: 2;
             width: 100%;
             max-width: 480px;
-            background: rgba(255, 255, 255, 0.96);
+            background: rgba(255,255,255,0.96);
             padding: 28px 22px;
             border-radius: 24px;
             text-align: center;
-            box-shadow: 0 12px 35px rgba(150, 50, 90, 0.18);
+            box-shadow: 0 12px 35px rgba(150,50,90,0.18);
             animation: cardAppear 1.2s ease;
         }
 
@@ -46,7 +44,7 @@ HTML = """
             object-fit: cover;
             border-radius: 50%;
             border: 5px solid #ffe0eb;
-            box-shadow: 0 5px 20px rgba(194, 24, 91, 0.2);
+            box-shadow: 0 5px 20px rgba(194,24,91,0.2);
             display: block;
             margin: 0 auto 18px;
         }
@@ -78,8 +76,7 @@ HTML = """
             font-weight: bold;
             margin-top: 18px;
             cursor: pointer;
-            box-shadow: 0 5px 15px rgba(194, 24, 91, 0.2);
-            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 5px 15px rgba(194,24,91,0.2);
         }
 
         button:active {
@@ -88,7 +85,6 @@ HTML = """
 
         #message {
             display: none;
-            position: relative;
             text-align: left;
             color: #49313b;
             font-size: 16px;
@@ -98,32 +94,19 @@ HTML = """
 
         #message.show {
             display: block;
-            animation: revealMessage 3s cubic-bezier(0.22, 1, 0.36, 1) both;
+            animation: revealMessage 3s ease both;
         }
 
         @keyframes revealMessage {
-            0% {
+            from {
                 opacity: 0;
-                clip-path: inset(50% 50% 50% 50%);
                 transform: scale(0.94);
+                clip-path: inset(50%);
             }
-
-            30% {
-                opacity: 0.35;
-                clip-path: inset(30% 30% 30% 30%);
-                transform: scale(0.97);
-            }
-
-            65% {
-                opacity: 0.8;
-                clip-path: inset(8% 8% 8% 8%);
-                transform: scale(0.995);
-            }
-
-            100% {
+            to {
                 opacity: 1;
-                clip-path: inset(0 0 0 0);
                 transform: scale(1);
+                clip-path: inset(0);
             }
         }
 
@@ -136,24 +119,16 @@ HTML = """
 
         .heart {
             font-size: 30px;
-            display: inline-block;
             animation: heartbeat 1s infinite;
         }
 
-        .music-controls {
-            display: flex;
-            justify-content: center;
-            width: 100%;
-            margin-top: 10px;
-        }
-
         .music-button {
-            display: block;
-            margin: 0 auto;
             background: #fff0f5;
             color: #ad1457;
             border: 1px solid #f8bbd0;
             box-shadow: none;
+            display: block;
+            margin: 10px auto;
         }
 
         .falling-flower {
@@ -165,230 +140,200 @@ HTML = """
         }
 
         @keyframes cardAppear {
-            from {
-                opacity: 0;
-                transform: translateY(25px) scale(0.97);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
+            from { opacity: 0; transform: translateY(25px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         @keyframes heartbeat {
-            0%, 100% {
-                transform: scale(1);
-            }
-
-            50% {
-                transform: scale(1.2);
-            }
+            50% { transform: scale(1.2); }
         }
 
         @keyframes flowerFall {
-            0% {
-                transform: translateY(0) rotate(0deg);
-                opacity: 0;
-            }
-
-            10% {
-                opacity: 0.9;
-            }
-
-            100% {
-                transform: translateY(110vh) rotate(360deg);
-                opacity: 0;
-            }
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.9; }
+            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
         }
 
-        @media (max-width: 380px) {
-            .card {
-                padding: 22px 16px;
-            }
-
-            .mama-photo {
-                width: 150px;
-                height: 150px;
-            }
-
-            h1 {
-                font-size: 23px;
-            }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            .card, .heart {
-                animation: none;
-            }
-
-            #message.show {
-                animation: none;
-                clip-path: none;
-                opacity: 1;
-                transform: none;
-            }
+        @media(max-width:380px) {
+            .card { padding: 22px 16px; }
+            .mama-photo { width: 150px; height: 150px; }
+            h1 { font-size: 23px; }
         }
     </style>
 </head>
 
 <body>
 
-    <audio id="myMusic" loop preload="auto">
-        <source src="/static/mama.mp3" type="audio/mpeg">
-    </audio>
+<audio id="myMusic" loop preload="none">
+    <source src="{{ url_for('static', filename='mama.mp3') }}"
+            type="audio/mpeg">
+</audio>
 
-    <main class="card">
+<main class="card">
 
-        <img src="/static/mama.jpg"
-             alt="Mama yangu mpendwa"
-             class="mama-photo">
+    <img
+        src="{{ url_for('static', filename='mama.jpg') }}"
+        alt="Mama yangu mpendwa"
+        class="mama-photo"
+        onerror="this.style.display='none';
+        document.getElementById('imageError').style.display='block';">
 
-        <div class="decoration">💐🌹💐</div>
+    <p id="imageError" style="display:none;color:#c2185b;">
+        Picha haijapatikana. Tafadhali hakiki faili mama.jpg.
+    </p>
 
-        <h1>Kwa Mama Yangu Mpendwa ❤️</h1>
+    <div class="decoration">💐🌹💐</div>
 
-        <p class="intro">
-            Mama, nimekuandalia ujumbe maalumu kutoka moyoni mwangu.
-            Natumaini utakufurahisha. ❤️
+    <h1>Kwa Mama Yangu Mpendwa ❤️</h1>
+
+    <p class="intro">
+        Mama, nimekuandalia ujumbe maalumu kutoka moyoni mwangu.
+        Natumaini utakufurahisha. ❤️
+    </p>
+
+    <button id="openButton" onclick="openMessage()">
+        💌 Fungua Ujumbe Wako
+    </button>
+
+    <button class="music-button" id="musicButton"
+            onclick="toggleMusic()">
+        🎵 Washa Muziki
+    </button>
+
+    <p id="musicError" style="display:none;color:#c2185b;">
+        Muziki haujapatikana. Hakiki faili mama.mp3.
+    </p>
+
+    <div id="message">
+
+        <p><strong>Mama yangu mpendwa! ❤️</strong></p>
+
+        <p>
+            Kama kuna zawadi moja ambayo Mungu amenipa na
+            nitashukuru milele, basi ni kuwa na wewe kama
+            mama yangu. Hakuna maneno yanayoweza kueleza
+            kikamilifu jinsi ninavyokupenda na kukuthamini.
         </p>
 
-        <button id="openButton" onclick="openMessage()"> washa muziki kisha
-            💌 Fungua Ujumbe Wako
-        </button>
+        <p>
+            Asante kwa upendo wako, kwa kunijali, kwa
+            kunivumilia na kwa kila jambo ulilofanya kwa
+            ajili yangu. Hata kama wakati mwingine nashindwa
+            kukuambia ninavyokupenda, nataka ujue kwamba
+            nafasi yako moyoni mwangu haiwezi kuchukuliwa
+            na mtu mwingine yeyote.
+        </p>
 
-        <div class="music-controls">
-            <button class="music-button" id="musicButton"
-                    onclick="toggleMusic()">
-                🎵 Washa Muziki
-            </button>
+        <p>
+            Mama, wewe ni baraka katika maisha yangu.
+            Ninakuombea Mungu akupe afya njema, amani,
+            furaha na maisha marefu. Akulinde kila siku
+            na akujalie kuona matunda ya juhudi zako.
+        </p>
+
+        <p>
+            Natamani siku moja nikupe sababu nyingi za
+            kutabasamu na ujivunie kuwa na mimi kama
+            mtoto wako.
+        </p>
+
+        <p>
+            Huenda nisiwe na kila kitu duniani, lakini
+            ninashukuru kwa kuwa na wewe. Upendo wako ni
+            zawadi ambayo siwezi kuilinganisha na kitu
+            chochote.
+        </p>
+
+        <p><strong>MAMA, NAKUPENDA SANA! ❤️</strong></p>
+
+        <p>
+            Mungu akubariki, mama yangu. Akupe nguvu,
+            afya njema na furaha tele. 🙏🌹
+        </p>
+
+        <div class="signature">
+            Kwa upendo mwingi,<br>
+            Mtoto wako anayekupenda ❤️
+            <div class="heart">💖</div>
         </div>
 
-        <div id="message">
+    </div>
 
-            <p><strong>Mama yangu mpendwa! ❤️</strong></p>
+</main>
 
-            <p>
-                Kama kuna zawadi moja ambayo Mungu amenipa na
-                nitashukuru milele, basi ni kuwa na wewe kama
-                mama yangu. Hakuna maneno yanayoweza kueleza
-                kikamilifu jinsi ninavyokupenda na kukuthamini.
-            </p>
+<script>
 
-            <p>
-                Asante kwa upendo wako, kwa kunijali, kwa
-                kunivumilia na kwa kila jambo ulilofanya kwa
-                ajili yangu. Hata kama wakati mwingine nashindwa
-                kukuambia ninavyokupenda, nataka ujue kwamba
-                nafasi yako moyoni mwangu haiwezi kuchukuliwa
-                na mtu mwingine yeyote.
-            </p>
+    function openMessage() {
+        const message = document.getElementById("message");
+        const button = document.getElementById("openButton");
 
-            <p>
-                Mama, wewe ni baraka katika maisha yangu.
-                Ninakuombea Mungu akupe afya njema, amani,
-                furaha na maisha marefu. Akulinde kila siku
-                na akujalie kuona matunda ya juhudi zako.
-            </p>
+        message.classList.remove("show");
+        void message.offsetWidth;
+        message.classList.add("show");
 
-            <p>
-                Natamani siku moja nikupe sababu nyingi za
-                kutabasamu na ujivunie kuwa na mimi kama
-                mtoto wako.
-            </p>
+        button.style.display = "none";
 
-            <p>
-                Huenda nisiwe na kila kitu duniani, lakini
-                ninashukuru kwa kuwa na wewe. Upendo wako ni
-                zawadi ambayo siwezi kuilinganisha na kitu
-                chochote.
-            </p>
+        setTimeout(function() {
+            message.scrollIntoView({
+                behavior: "smooth",
+                block: "nearest"
+            });
+        }, 100);
+    }
 
-            <p><strong>MAMA, NAKUPENDA SANA! ❤️</strong></p>
+    const flowerTypes = ["🌹", "🌸", "🌺", "🌷", "💗"];
 
-            <p>
-                Mungu akubariki, mama yangu. Akupe nguvu,
-                afya njema na furaha tele. 🙏🌹
-            </p>
+    function createFlower() {
+        const flower = document.createElement("div");
 
-            <div class="signature">
-                Kwa upendo mwingi,<br>
-                Mtoto wako anayekupenda ❤️
-                <div class="heart">💖</div>
-            </div>
+        flower.className = "falling-flower";
+        flower.textContent =
+            flowerTypes[Math.floor(Math.random() * flowerTypes.length)];
 
-        </div>
-    </main>
+        flower.style.left = Math.random() * 100 + "vw";
+        flower.style.fontSize = (16 + Math.random() * 14) + "px";
 
-    <script>
-        function openMessage() {
-            const message = document.getElementById("message");
-            const button = document.getElementById("openButton");
+        const duration = 7 + Math.random() * 5;
+        flower.style.animationDuration = duration + "s";
 
-            // Anzisha animation upya
-            message.classList.remove("show");
+        document.body.appendChild(flower);
 
-            // Lazimisha browser kuhesabu upya mtindo wa ujumbe
-            void message.offsetWidth;
+        setTimeout(function() {
+            flower.remove();
+        }, duration * 1000);
+    }
 
-            // Onyesha ujumbe na anza animation
-            message.classList.add("show");
-            button.style.display = "none";
+    setInterval(createFlower, 1200);
 
-            setTimeout(function() {
-                message.scrollIntoView({
-                    behavior: "smooth",
-                    block: "nearest"
-                });
-            }, 100);
-        }
+    async function toggleMusic() {
 
-        // Maua yanayoanguka
-        const flowerTypes = ["🌹", "🌸", "🌺", "🌷", "💗"];
+        const music = document.getElementById("myMusic");
+        const button = document.getElementById("musicButton");
+        const errorMessage = document.getElementById("musicError");
 
-        function createFlower() {
-            const flower = document.createElement("div");
+        if (music.paused) {
 
-            flower.className = "falling-flower";
-            flower.textContent =
-                flowerTypes[Math.floor(Math.random() * flowerTypes.length)];
+            try {
+                await music.play();
 
-            flower.style.left = Math.random() * 100 + "vw";
-            flower.style.fontSize = (16 + Math.random() * 14) + "px";
+                button.textContent = "⏸️ Simamisha Muziki";
+                errorMessage.style.display = "none";
 
-            const duration = 7 + Math.random() * 5;
-            flower.style.animationDuration = duration + "s";
+            } catch (error) {
 
-            document.body.appendChild(flower);
-
-            setTimeout(function() {
-                flower.remove();
-            }, duration * 1000);
-        }
-
-        setInterval(createFlower, 1200);
-
-        // Muziki wa MP3
-        async function toggleMusic() {
-            const music = document.getElementById("myMusic");
-            const button = document.getElementById("musicButton");
-
-            if (music.paused) {
-                try {
-                    await music.play();
-                    button.textContent = "⏸️ Simamisha Muziki";
-                } catch (error) {
-                    alert(
-                        "Imeshindikana kucheza wimbo. " +
-                        "Hakikisha mama.mp3 ipo ndani ya folder la static."
-                    );
-                }
-            } else {
-                music.pause();
-                button.textContent = "🎵 Washa Muziki";
+                errorMessage.style.display = "block";
+                button.textContent = "🎵 Jaribu Tena";
             }
+
+        } else {
+
+            music.pause();
+            button.textContent = "🎵 Washa Muziki";
+
         }
-    </script>
+    }
+
+</script>
 
 </body>
 </html>
@@ -399,4 +344,4 @@ def home():
     return render_template_string(HTML)
 
 if __name__ == "__main__":
-    app.run(host="127.0.0.1", port=5000, debug=False)
+    app.run(host="0.0.0.0", port=5000, debug=False)
